@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Report – StudentMS{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Attendance Report</h1>
+  <p>Overall attendance summary for all students</p>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr><th>Roll No</th><th>Name</th><th>Course</th><th>Present</th><th>Total Days</th><th>Attendance %</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      {% set pct = (r.present * 100 // r.total) if r.total else 0 %}
+      <tr>
+        <td style="color:var(--accent);font-weight:500;">{{ r.roll_no }}</td>
+        <td>{{ r.name }}</td>
+        <td>{{ r.course }}</td>
+        <td>{{ r.present }}</td>
+        <td>{{ r.total }}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="progress-bar" style="width:80px;">
+              <div class="progress-fill" style="width:{{ pct }}%;background:{{ '#00d4aa' if pct>=75 else '#ffa94d' if pct>=50 else '#ff5c5c' }};"></div>
+            </div>
+            <span style="font-size:0.85rem;">{{ pct }}%</span>
+          </div>
+        </td>
+        <td>
+          {% if pct >= 75 %}
+            <span class="badge badge-present">Good</span>
+          {% elif pct >= 50 %}
+            <span class="badge" style="background:rgba(255,169,77,0.15);color:#ffa94d;">Low</span>
+          {% else %}
+            <span class="badge badge-absent">Critical</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="color:var(--muted);">No data yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

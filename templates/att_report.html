@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block page_title %}Attendance Report{% endblock %}
+{% block content %}
+<div class="card p-4">
+  <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill text-primary"></i> Overall Attendance Report</h6>
+  {% if report %}
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr><th>#</th><th>Name</th><th>Roll No</th><th>Course</th><th class="text-center">Present</th><th class="text-center">Absent</th><th class="text-center">Total</th><th class="text-center">%</th></tr>
+      </thead>
+      <tbody>
+        {% for r in report %}
+        {% set pct = ((r.present / r.total * 100) | round(1)) if r.total > 0 else 0 %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td class="fw-semibold">{{ r.name }}</td>
+          <td><span class="badge bg-secondary">{{ r.roll_no }}</span></td>
+          <td>{{ r.course }}</td>
+          <td class="text-center"><span class="badge bg-success">{{ r.present }}</span></td>
+          <td class="text-center"><span class="badge bg-danger">{{ r.absent }}</span></td>
+          <td class="text-center">{{ r.total }}</td>
+          <td class="text-center">
+            <div class="progress" style="height:18px;min-width:80px;">
+              <div class="progress-bar {{ 'bg-success' if pct >= 75 else 'bg-warning' if pct >= 50 else 'bg-danger' }}"
+                   style="width:{{ pct }}%">{{ pct }}%</div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted">No attendance data yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

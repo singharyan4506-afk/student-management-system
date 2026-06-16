@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ student.name }} – StudentMS{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>{{ student.name }}</h1>
+  <p>Roll No: {{ student.roll_no }} · {{ student.course }} Year {{ student.year }}</p>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+  <div class="card">
+    <h2 style="font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">Student Info</h2>
+    <table style="width:100%;">
+      <tr><td style="color:var(--muted);padding:6px 0;font-size:0.85rem;">Email</td><td>{{ student.email or '—' }}</td></tr>
+      <tr><td style="color:var(--muted);padding:6px 0;font-size:0.85rem;">Phone</td><td>{{ student.phone or '—' }}</td></tr>
+      <tr><td style="color:var(--muted);padding:6px 0;font-size:0.85rem;">Course</td><td>{{ student.course }}</td></tr>
+      <tr><td style="color:var(--muted);padding:6px 0;font-size:0.85rem;">Year</td><td>Year {{ student.year }}</td></tr>
+      <tr><td style="color:var(--muted);padding:6px 0;font-size:0.85rem;">Registered</td><td>{{ student.created_at[:10] }}</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h2 style="font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">Attendance Summary</h2>
+    <div style="font-size:2.5rem;font-weight:700;color:var(--accent2);">{{ present_count }}</div>
+    <div style="color:var(--muted);font-size:0.85rem;">days present out of {{ records|length }} recorded</div>
+    {% if records|length > 0 %}
+    <div class="progress-bar" style="margin-top:12px;">
+      <div class="progress-fill" style="width:{{ (present_count*100//records|length) }}%;"></div>
+    </div>
+    <div style="color:var(--muted);font-size:0.78rem;margin-top:6px;">{{ (present_count*100//records|length) }}% attendance</div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="top-row">
+    <h2 style="font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Attendance Records</h2>
+    <div style="display:flex;gap:8px;">
+      <a href="{{ url_for('edit_student', sid=student.id) }}" class="btn btn-sm btn-edit">Edit Student</a>
+      <a href="{{ url_for('students') }}" class="btn btn-sm btn-edit">← Back</a>
+    </div>
+  </div>
+  <table style="margin-top:12px;">
+    <thead><tr><th>Date</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td>{{ r.date }}</td>
+        <td><span class="badge badge-{{ r.status.lower() }}">{{ r.status }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="2" style="color:var(--muted);">No attendance records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

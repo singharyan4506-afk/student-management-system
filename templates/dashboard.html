@@ -1,57 +1,53 @@
 {% extends 'base.html' %}
 {% block page_title %}Dashboard{% endblock %}
 {% block content %}
-<div class="row g-3 mb-4">
-  <div class="col-md-4">
-    <div class="stat-card" style="background:linear-gradient(135deg,#1a237e,#3949ab);">
-      <div class="d-flex justify-content-between align-items-center">
-        <div><p class="mb-1 small opacity-75">Total Students</p><h2 class="fw-bold mb-0">{{ total }}</h2></div>
-        <i class="bi bi-people-fill" style="font-size:2.5rem;opacity:.4;"></i>
-      </div>
+<div class="row" style="margin-bottom:20px;">
+  <div class="col">
+    <div class="stat-box">
+      <p>Total Students</p>
+      <h2>{{ total }}</h2>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="stat-card" style="background:linear-gradient(135deg,#1b5e20,#388e3c);">
-      <div class="d-flex justify-content-between align-items-center">
-        <div><p class="mb-1 small opacity-75">Present Today</p><h2 class="fw-bold mb-0">{{ present }}</h2></div>
-        <i class="bi bi-check-circle-fill" style="font-size:2.5rem;opacity:.4;"></i>
-      </div>
+  <div class="col">
+    <div class="stat-box">
+      <p>Present Today</p>
+      <h2>{{ present }}</h2>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="stat-card" style="background:linear-gradient(135deg,#b71c1c,#e53935);">
-      <div class="d-flex justify-content-between align-items-center">
-        <div><p class="mb-1 small opacity-75">Absent Today</p><h2 class="fw-bold mb-0">{{ absent }}</h2></div>
-        <i class="bi bi-x-circle-fill" style="font-size:2.5rem;opacity:.4;"></i>
-      </div>
+  <div class="col">
+    <div class="stat-box">
+      <p>Absent Today</p>
+      <h2>{{ absent }}</h2>
     </div>
   </div>
 </div>
 
-<div class="row g-3">
-  <div class="col-md-6">
-    <div class="card p-3">
-      <h6 class="fw-bold mb-3"><i class="bi bi-pie-chart-fill text-primary"></i> Students by Course</h6>
-      {% if courses %}
-      <table class="table table-sm">
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <strong>Students by Course</strong>
+      <table style="margin-top:10px;">
         <thead><tr><th>Course</th><th>Count</th></tr></thead>
         <tbody>
-          {% for c in courses %}
-          <tr><td>{{ c.course }}</td><td><span class="badge bg-primary">{{ c.cnt }}</span></td></tr>
-          {% endfor %}
+          {% if courses %}
+            {% for c in courses %}
+            <tr><td>{{ c.course }}</td><td>{{ c.cnt }}</td></tr>
+            {% endfor %}
+          {% else %}
+          <tr><td colspan="2">No students yet.</td></tr>
+          {% endif %}
         </tbody>
       </table>
-      {% else %}
-      <p class="text-muted">No students yet.</p>
-      {% endif %}
     </div>
   </div>
-  <div class="col-md-6">
-    <div class="card p-3">
-      <h6 class="fw-bold mb-3"><i class="bi bi-lightning-fill text-warning"></i> Quick Actions</h6>
-      <a href="{{ url_for('add_student') }}" class="btn btn-primary w-100 mb-2"><i class="bi bi-person-plus-fill"></i> Add New Student</a>
-      <a href="{{ url_for('attendance') }}" class="btn btn-success w-100 mb-2"><i class="bi bi-calendar-check-fill"></i> Mark Today's Attendance</a>
-      <a href="{{ url_for('att_report') }}" class="btn btn-outline-secondary w-100"><i class="bi bi-bar-chart-fill"></i> View Attendance Report</a>
+  <div class="col">
+    <div class="card">
+      <strong>Quick Actions</strong>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
+        <a href="{{ url_for('add_student') }}" class="btn">+ Add New Student</a>
+        <a href="{{ url_for('attendance') }}" class="btn">Mark Today's Attendance</a>
+        <a href="{{ url_for('att_report') }}" class="btn">View Attendance Report</a>
+      </div>
     </div>
   </div>
 </div>

@@ -1,59 +1,50 @@
 {% extends 'base.html' %}
 {% block page_title %}Attendance{% endblock %}
 {% block content %}
-<div class="card p-4">
-  <form method="POST">
-    <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-      <div>
-        <label class="form-label fw-semibold mb-1">Date</label>
-        <input type="date" name="att_date" value="{{ sel_date }}" class="form-control">
-      </div>
-      <div class="d-flex gap-2 align-items-end" style="margin-top:24px;">
-        <a href="{{ url_for('attendance') }}?date={{ sel_date }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-eye-fill"></i> View</a>
-        {% if students %}
-        <button type="button" class="btn btn-outline-success btn-sm" onclick="markAll('Present')"><i class="bi bi-check-all"></i> All Present</button>
-        <button type="button" class="btn btn-outline-danger btn-sm" onclick="markAll('Absent')"><i class="bi bi-x-lg"></i> All Absent</button>
-        {% endif %}
-      </div>
+<form method="POST">
+  <div class="gap" style="margin-bottom:16px;">
+    <div class="form-group" style="margin:0;">
+      <label style="margin-bottom:4px;display:block;">Date</label>
+      <input type="date" name="att_date" value="{{ sel_date }}" style="width:auto;">
     </div>
     {% if students %}
-    <div class="table-responsive">
-      <table class="table align-middle">
-        <thead class="table-light">
-          <tr><th>#</th><th>Name</th><th>Roll No</th><th>Course</th><th class="text-center">Status</th></tr>
-        </thead>
-        <tbody>
-          {% for s in students %}
-          {% set cur = existing.get(s.id, 'Present') %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td class="fw-semibold">{{ s.name }}</td>
-            <td><span class="badge bg-secondary">{{ s.roll_no }}</span></td>
-            <td>{{ s.course }}</td>
-            <td class="text-center">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input att-radio" type="radio" name="status_{{ s.id }}" value="Present" {{ 'checked' if cur=='Present' }}>
-                <label class="form-check-label text-success fw-semibold">Present</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input att-radio" type="radio" name="status_{{ s.id }}" value="Absent" {{ 'checked' if cur=='Absent' }}>
-                <label class="form-check-label text-danger fw-semibold">Absent</label>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <button class="btn btn-primary mt-2"><i class="bi bi-save-fill"></i> Save Attendance</button>
-    {% else %}
-    <div class="text-center py-5 text-muted">
-      <i class="bi bi-people" style="font-size:3rem;"></i>
-      <p class="mt-2">No students registered yet. <a href="{{ url_for('add_student') }}">Add students first.</a></p>
+    <div class="gap" style="margin-top:20px;">
+      <button type="button" class="btn" onclick="markAll('Present')">All Present</button>
+      <button type="button" class="btn" onclick="markAll('Absent')">All Absent</button>
     </div>
     {% endif %}
-  </form>
-</div>
+  </div>
+
+  {% if students %}
+  <table>
+    <thead>
+      <tr><th>#</th><th>Name</th><th>Roll No</th><th>Course</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for s in students %}
+      {% set cur = existing.get(s.id, 'Present') %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ s.name }}</td>
+        <td>{{ s.roll_no }}</td>
+        <td>{{ s.course }}</td>
+        <td>
+          <label style="margin-right:12px;">
+            <input class="att-radio" type="radio" name="status_{{ s.id }}" value="Present" {{ 'checked' if cur=='Present' }}> Present
+          </label>
+          <label>
+            <input class="att-radio" type="radio" name="status_{{ s.id }}" value="Absent" {{ 'checked' if cur=='Absent' }}> Absent
+          </label>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button class="btn btn-dark mt">Save Attendance</button>
+  {% else %}
+  <p>No students registered yet. <a href="{{ url_for('add_student') }}">Add students first.</a></p>
+  {% endif %}
+</form>
 <script>
 function markAll(status) {
   document.querySelectorAll('.att-radio').forEach(r => { if (r.value === status) r.checked = true; });
